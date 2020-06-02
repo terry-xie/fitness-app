@@ -1,26 +1,114 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
+import {
+  BrowserRouter,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+import Login from './components/Login/Login';
+import Logout from './components/Logout/Logout';
+import GoalPreview from './containers/GoalPreview/GoalPreview';
+import Log from './containers/Log/Log';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import Oauth from './components/Oauth/Oauth';
+import { Layout, Menu, Result } from 'antd';
 import './App.css';
+import UserContext from './components/UserContext/UserContext';
+import Withings from './components/Withings/Withings';
+const { Header, Content, Footer } = Layout;
 
 function App() {
+  const [sessionInfo, setSessionInfo] = useState({
+    accessToken: "",
+    refreshToken: "",
+    id: "",
+    name: "",
+    isSignedIn: false
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <UserContext.Provider value={{sessionInfo,setSessionInfo}}>
+      <BrowserRouter>
+        <Layout>
+          <Header style={{ position: 'fixed', zIndex: 1, width: '100%', textAlign: 'right' }}>
+            <Menu theme="dark" mode="horizontal">
+              <Menu.Item key="1">
+                <Link to="/preview">Preview</Link>
+              </Menu.Item>
+              {
+                !sessionInfo.isSignedIn &&
+                <Menu.Item key="4">
+                  <Link to="/login">Login</Link>
+                </Menu.Item>
+              }
+              {
+                sessionInfo.isSignedIn &&
+                  <Menu.Item key="2">
+                    <Link to="/log">Logs</Link>
+                  </Menu.Item>
+              }
+              {
+                sessionInfo.isSignedIn &&
+                  <Menu.Item key="3">
+                    <Link to="/logout">Logout</Link>
+                  </Menu.Item>
+              }
+            </Menu>
+          </Header>
+          <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64 }}>
+            <div className="site-layout-background" style={{ padding: 24, minHeight: 380 }}>
+              <Switch>
+                <Route path="/log">
+                  <ProtectedRoute>
+                    <Log/>
+                  </ProtectedRoute>
+                </Route>
+                <Route path="/withings">
+                  <Withings/>
+                </Route>
+                <Route exact path="/login">
+                  <Login/>
+                </Route>
+                <Route exact path="/preview">
+                  <GoalPreview/>
+                </Route>
+                <Route exact path="/logout">
+                  <Logout/>
+                </Route>
+                <Route exact path="/oauth">
+                  <Oauth setSessionInfo={setSessionInfo}/>
+                </Route>
+                <Route exact path="/error">
+                  <Result
+                    status="500"
+                    title="500"
+                    subTitle="Sorry, something went wrong."
+                    extra={<Link to="/">Back Home</Link>}
+                  />
+                </Route>
+                <Route exact path="/">
+                  {
+                    sessionInfo.isSignedIn ?
+                      <Log/> :
+                      <Login/>
+                  }
+                </Route>
+                <Route>
+                  <Result
+                    status="404"
+                    title="404"
+                    subTitle="Sorry, the page you visted does not exist."
+                    extra={<Link to="/">Back Home</Link>}
+                  />
+                </Route>
+              </Switch>
+            </div>
+          </Content>
+          {/* <Footer></Footer> */}
+        </Layout>
+      </BrowserRouter>
+    </UserContext.Provider>
+  )
 }
 
 export default App;
