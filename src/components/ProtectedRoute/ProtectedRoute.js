@@ -5,7 +5,7 @@ import { getSession } from '../../redux/selectors';
 import { useSelector } from 'react-redux';
 
 const ProtectedRoute = props => {
-    const {sessionInfo} = useSelector(getSession);
+    const sessionInfo = useSelector(getSession);
 
     return sessionInfo.isSignedIn ? props.children : 
         (

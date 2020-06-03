@@ -37,7 +37,7 @@ const Log = (props) => {
     });
     const [formLoading, setFormLoading] = useState(false);
     const [logViewLoading, setLogViewLoading] = useState(true);
-    const {sessionInfo} = useSelector(getSession);
+    const sessionInfo = useSelector(getSession);
 
     const logFormSubmitHandler = (values) => {
         setFormLoading(true);
