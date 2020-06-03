@@ -2,7 +2,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { oauthConfig } from './config';
 
-const redirect = 'http://b9aa74247105.ngrok.io/oauth';
+const redirect = 'http://bcb7aa75b04c.ngrok.io/oauth';
 
 class OauthApi {
     constructor(){
@@ -13,8 +13,8 @@ class OauthApi {
         return this.api.post('/oauth2/token',
             qs.stringify({
                 grant_type: 'authorization_code',
-                client_id: 'd4ea6caa3b15bdf919fafd6ccfd15acfcf00ef4ac454d66063aa349674f58d5a',
-                client_secret: 'c47eea73cde19e646fe61c8fc3697a9dfbf5a695cef6cb2ca8ab486db803fb89',
+                client_id: process.env.REACT_APP_WITHINGS_CLIENT_ID,
+                client_secret: process.env.REACT_APP_WITHINGS_SECRET,
                 code: accessCode,
                 redirect_uri: redirect
             })
@@ -33,7 +33,7 @@ class OauthApi {
     static getAuthenticationCodeUrl = () => {
         let params = {
             response_type: 'code',
-            client_id: 'd4ea6caa3b15bdf919fafd6ccfd15acfcf00ef4ac454d66063aa349674f58d5a',
+            client_id: process.env.REACT_APP_WITHINGS_CLIENT_ID,
             state: 'login',
             scope: 'user.metrics',
             redirect_uri: redirect

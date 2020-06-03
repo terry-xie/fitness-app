@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Result } from 'antd';
-import UserContext from '../UserContext/UserContext';
+import { getSession } from '../../redux/selectors';
+import { useSelector } from 'react-redux';
 
 const ProtectedRoute = props => {
-    const {sessionInfo} = useContext(UserContext);
+    const {sessionInfo} = useSelector(getSession);
 
     return sessionInfo.isSignedIn ? props.children : 
         (

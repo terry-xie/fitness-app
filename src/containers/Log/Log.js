@@ -5,7 +5,8 @@ import BodyWeightGraph from '../../components/BodyWeightGraph/BodyWeightGraph';
 import Graph from '../../components/Graph/Graph';
 import { Form, Button, InputNumber, DatePicker, Slider, Switch } from 'antd';
 import { FirebaseContext } from '../../components/Firebase';
-import UserContext from '../../components/UserContext/UserContext';
+import { getSession } from '../../redux/selectors';
+import { useSelector } from 'react-redux';
 
 const validateMessages = {
     required: '${label} is required!',
@@ -36,7 +37,7 @@ const Log = (props) => {
     });
     const [formLoading, setFormLoading] = useState(false);
     const [logViewLoading, setLogViewLoading] = useState(true);
-    const {sessionInfo} = useContext(UserContext);
+    const {sessionInfo} = useSelector(getSession);
 
     const logFormSubmitHandler = (values) => {
         setFormLoading(true);
@@ -76,13 +77,6 @@ const Log = (props) => {
             setLogViewLoading(false);
         });
     },[]);
-
-    // const bodyFatData = useMemo(() => {
-    //     return logs.map(entry => ({
-    //         date: entry.date,
-    //         bodyFat: entry.bodyFat
-    //     })).sort((a,b) => a.date > b.date);
-    // },[logs]);
 
     const bodyFatData = useMemo(() => {
         return logs.map(entry => ([

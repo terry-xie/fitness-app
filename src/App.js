@@ -13,21 +13,15 @@ import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import Oauth from './components/Oauth/Oauth';
 import { Layout, Menu, Result } from 'antd';
 import './App.css';
-import UserContext from './components/UserContext/UserContext';
 import Withings from './components/Withings/Withings';
+import { getSession } from './redux/selectors';
+import { useSelector } from 'react-redux';
 const { Header, Content, Footer } = Layout;
 
 function App() {
-  const [sessionInfo, setSessionInfo] = useState({
-    accessToken: "",
-    refreshToken: "",
-    id: "",
-    name: "",
-    isSignedIn: false
-  });
+  const sessionInfo = useSelector(getSession);
 
   return (
-    <UserContext.Provider value={{sessionInfo,setSessionInfo}}>
       <BrowserRouter>
         <Layout>
           <Header style={{ position: 'fixed', zIndex: 1, width: '100%', textAlign: 'right' }}>
@@ -76,7 +70,7 @@ function App() {
                   <Logout/>
                 </Route>
                 <Route exact path="/oauth">
-                  <Oauth setSessionInfo={setSessionInfo}/>
+                  <Oauth/>
                 </Route>
                 <Route exact path="/error">
                   <Result
@@ -107,7 +101,6 @@ function App() {
           {/* <Footer></Footer> */}
         </Layout>
       </BrowserRouter>
-    </UserContext.Provider>
   )
 }
 

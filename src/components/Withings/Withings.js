@@ -1,7 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
-import UserContext from '../UserContext/UserContext';
 import { DataApi } from '../../withingsApi';
 import { Table, Typography } from 'antd';
+import { useSelector } from 'react-redux';
+import { getSession } from '../../redux/selectors';
 
 const { Text } = Typography;
 
@@ -70,7 +71,7 @@ const weeklyColumns = [
 ];
 
 const Withings = props => {
-    const { sessionInfo } = useContext(UserContext);
+    const sessionInfo = useSelector(getSession);
     const { accessToken } = sessionInfo;
     const [measurements, setMeasurements] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -143,7 +144,7 @@ const getWeeklyAverages = data => {
                 waterWeight: acc.waterWeight + parseFloat(curr.waterWeight),
                 bodyFat: acc.bodyFat + parseFloat(curr.bodyFat)
             }
-        }, {
+        },{
             muscleMass: 0,
             weight: 0,
             fatMass: 0,
