@@ -5,21 +5,25 @@ const initialState = {
     refreshToken: "",
     id: "",
     name: "",
-    isSignedIn: false
+    isSignedIn: false,
+    oauthProvider: '',
+    mode: ''
 }
 
 export default function(state = initialState, action){
     switch(action.type) {
         case SET_SESSION: 
-            const { accessToken, refreshToken, id, name, isSignedIn } = action.payload;
+            const { accessToken, refreshToken, id, name, isSignedIn, oauthProvider, mode } = action.payload;
+
             return {
                 ...state,
-                accessToken: accessToken,
-                refreshToken: refreshToken,
-                id: id,
-                name: name,
-                isSignedIn: isSignedIn
-                //maybe only assign if value is passed
+                accessToken: accessToken ? accessToken : state.accessToken,
+                refreshToken: refreshToken ? refreshToken : state.refreshToken,
+                id: id ? id : state.id,
+                name: name ? name : state.name,
+                isSignedIn: isSignedIn ? isSignedIn : state.isSignedIn,
+                oauthProvider: oauthProvider ? oauthProvider : state.oauthProvider,
+                mode: mode ? mode : state.mode
             };
 
         default:

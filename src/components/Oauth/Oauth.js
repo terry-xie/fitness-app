@@ -12,6 +12,7 @@ const Oauth = props => {
 
     useEffect(() => {
         const code = queryString.parse(history.location.search).code;
+        const mode = queryString.parse(history.location.search).state;
         const oauth = new OauthApi();
         oauth.getAccessToken(code)
             .then(res => {
@@ -21,10 +22,12 @@ const Oauth = props => {
                         accessToken: res.accessToken,
                         refreshToken: res.refreshToken,
                         id: res.id,
-                        isSignedIn: true
+                        isSignedIn: true,
+                        oauthProvider: 'withings',
+                        mode: mode
                     }
                 });
-                history.push('/withings');
+                history.push('/log');
             })
             .catch(err => {
                 console.log(`[Oauth] Error: ${err}`);

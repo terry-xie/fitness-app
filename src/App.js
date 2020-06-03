@@ -26,9 +26,9 @@ function App() {
         <Layout>
           <Header style={{ position: 'fixed', zIndex: 1, width: '100%', textAlign: 'right' }}>
             <Menu theme="dark" mode="horizontal">
-              <Menu.Item key="1">
+              {/* <Menu.Item key="1">
                 <Link to="/preview">Preview</Link>
-              </Menu.Item>
+              </Menu.Item> */}
               {
                 !sessionInfo.isSignedIn &&
                 <Menu.Item key="4">
@@ -54,7 +54,9 @@ function App() {
               <Switch>
                 <Route path="/log">
                   <ProtectedRoute>
-                    <Log/>
+                    {
+                      sessionInfo.oauthProvider === 'google' ? <Log/> : <Withings/>
+                    }
                   </ProtectedRoute>
                 </Route>
                 <Route path="/withings">
@@ -82,9 +84,7 @@ function App() {
                 </Route>
                 <Route exact path="/">
                   {
-                    sessionInfo.isSignedIn ?
-                      <Log/> :
-                      <Login/>
+                    sessionInfo.isSignedIn ? <Log/> : <Login/>
                   }
                 </Route>
                 <Route>

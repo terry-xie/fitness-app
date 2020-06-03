@@ -15,7 +15,8 @@ const Login = props => {
             payload: {
                 id: `google${res.googleId}`,
                 name: res.profileObj.name,
-                isSignedIn: true
+                isSignedIn: true,
+                oauthProvider: 'google'
             }
         });
         history.push("/log");
@@ -26,14 +27,24 @@ const Login = props => {
         window.location.href = OauthApi.getAuthenticationCodeUrl();
     }
 
+    const onDemoClick = e => {
+        e.preventDefault();
+        window.location.href = OauthApi.getAuthenticationCodeUrl(true);
+    }
+
     return (
         <div>
-        <GoogleLogin
-            clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-            buttonText="Login"
-            onSuccess={onSuccessfulLogin}
-        />
-        <button onClick={onClick}>login</button>
+            Login with Google to record/track your own progress, or login with Withings to access your Withings stats. Use the Demo login to access a demo version of the app using sample data from Withings.
+            <br/>
+            <GoogleLogin
+                clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                buttonText="Login"
+                onSuccess={onSuccessfulLogin}
+            />
+            <br/>
+            <button onClick={onClick}>Withings Login</button>
+            <br/>
+            <button onClick={onDemoClick}>Withings Demo Login</button>
         </div>
     )
 };

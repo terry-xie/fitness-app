@@ -30,13 +30,14 @@ class OauthApi {
         });
     }
 
-    static getAuthenticationCodeUrl = () => {
+    static getAuthenticationCodeUrl = isDemo => {
         let params = {
             response_type: 'code',
             client_id: process.env.REACT_APP_WITHINGS_CLIENT_ID,
-            state: 'login',
+            state: isDemo ? 'demo' : 'normal',
             scope: 'user.metrics',
-            redirect_uri: redirect
+            redirect_uri: redirect,
+            mode: isDemo ? 'demo' : ''
         }; 
 
         const res = [];
