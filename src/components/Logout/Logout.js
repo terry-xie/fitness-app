@@ -1,27 +1,31 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { GoogleLogout } from 'react-google-login';
 import { useHistory } from 'react-router-dom';
-import { SET_SESSION } from '../../redux/actionTypes';
-import { useDispatch } from 'react-redux';
+import { SET_SESSION, RESET_SESSION } from '../../redux/actionTypes';
+import { getSession } from '../../redux/selectors';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 const Logout = props => {
     const history = useHistory();
     const dispatch = useDispatch();
+    const sessionInfo = useSelector(getSession);
 
     const onSuccessfulLogout = () => {
         dispatch({
-            type: SET_SESSION,
-            payload: {
-                accessToken: "",
-                refreshToken: "",
-                id: "",
-                name: "",
-                isSignedIn: false
-            }
+            type: SET_SESSION
         });
         history.push('/login');
     };
+
+    useEffect(() => {
+        if(sessionInfo.oauthProvider === 'withings'){
+            dispatch({
+                type: RESET_SESSION
+            });
+            history.push('/login');
+        }
+    },[])
 
     return (
         <GoogleLogout

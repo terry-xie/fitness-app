@@ -1,4 +1,4 @@
-import { SET_SESSION } from '../actionTypes';
+import { SET_SESSION, RESET_SESSION } from '../actionTypes';
 
 const initialState = {
     accessToken: "",
@@ -25,7 +25,9 @@ export default function(state = initialState, action){
                 oauthProvider: oauthProvider ? oauthProvider : state.oauthProvider,
                 mode: mode ? mode : state.mode
             };
-
+        case RESET_SESSION:
+            return initialState;
+        
         default:
             return state;
     }
