@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { GoogleLogout } from 'react-google-login';
 import { useHistory } from 'react-router-dom';
-import { SET_SESSION, RESET_SESSION } from '../../redux/actionTypes';
+import { RESET_SESSION } from '../../redux/actionTypes';
 import { getSession } from '../../redux/selectors';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -13,7 +13,7 @@ const Logout = props => {
 
     const onSuccessfulLogout = () => {
         dispatch({
-            type: SET_SESSION
+            type: RESET_SESSION
         });
         history.push('/login');
     };
