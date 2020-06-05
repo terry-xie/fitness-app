@@ -1,7 +1,6 @@
 import React, {useState, useMemo, useContext, useEffect} from 'react';
 import LogView from '../../components/LogView/LogView';
-import {formatDate, createBodyFatGoal} from '../../utility/utility';
-import BodyWeightGraph from '../../components/BodyWeightGraph/BodyWeightGraph';
+import { formatDate } from '../../utility/utility';
 import Graph from '../../components/Graph/Graph';
 import { Form, Button, InputNumber, DatePicker, Slider, Switch } from 'antd';
 import { FirebaseContext } from '../../components/Firebase';
@@ -15,26 +14,9 @@ const validateMessages = {
     }
 };
 
-const marks = {
-    1: '1 lb',
-    2: '2 lb',
-    3: '3 lb',
-    4: '4 lb',
-    5: '5 lb',
-    6: '6 lb',
-    7: '7 lb',
-    8: '8 lb',
-    9: '9 lb',
-    10: '10 lb'
-};
-
 const Log = (props) => {
     const firebase = useContext(FirebaseContext);
     const [logs, setLogs] = useState([]);
-    const [options, setOptions] = useState({
-        sliderValue: '1',
-        switchChecked: true
-    });
     const [formLoading, setFormLoading] = useState(false);
     const [logViewLoading, setLogViewLoading] = useState(true);
     const sessionInfo = useSelector(getSession);
@@ -57,7 +39,7 @@ const Log = (props) => {
                         bodyFat: values.bodyFat,
                         bodyWeight: values.bodyWeight
                     }
-                ].sort((a,b) => a.date > b.date);
+                ].sort((a,b) => a.date < b.date);
             });
             setFormLoading(false);
             setLogViewLoading(false);
@@ -72,26 +54,24 @@ const Log = (props) => {
                     date: log.date,
                     bodyFat: log.bodyFat,
                     bodyWeight: log.bodyWeight
-                }))
+                })).sort((a,b) => a.date < b.date)
             );
             setLogViewLoading(false);
         });
     },[]);
 
     const bodyFatData = useMemo(() => {
-        return logs.map(entry => ([
-            entry.date,
-            entry.bodyFat
-        ])).sort((a,b) => a.date > b.date);
+        return logs.map(entry => ({
+            x: entry.date,
+            y: entry.bodyFat
+        })).sort((a,b) => a.x > b.x);
     },[logs]);
-
-
 
     const bodyWeightData = useMemo(() => {
         return logs.map(entry => ({
-            date: entry.date,
-            bodyWeight: entry.bodyWeight
-        })).sort((a,b) => a.date > b.date);
+            x: entry.date,
+            y: entry.bodyWeight
+        })).sort((a,b) => a.x > b.x);
     },[logs]);
 
     const removeEntryHandler = ids => {
@@ -128,35 +108,8 @@ const Log = (props) => {
         });
     };
 
-    const onChangeSwitch = checked => setOptions(prev => ({
-        ...prev, 
-        switchChecked: checked 
-    }));
-
-    const onChangeSlider = value => setOptions(prev => ({
-        ...prev,
-        sliderValue: value
-    }));
-
-
-    let goalBodyFatData = null;
-    if(logs && logs.length > 0){
-        goalBodyFatData = {
-            yKey: 'second',
-            name: 'Your Goal Body Fat',
-            values: createBodyFatGoal({
-                        startDate: logs[0].date,
-                        endDate: logs[logs.length-1].date,
-                        startBodyFat: logs[0].bodyFat,
-                        startBodyWeight: logs[0].bodyWeight,
-                    }, options.sliderValue)
-        }
-    }
-    
     return(
         <div>
-            <h1>{sessionInfo.id}</h1>
-            <h1>{sessionInfo.name}</h1>
             <LogView logs={logs} removeEntry={removeEntryHandler} updateEntry={updateLogsHandler} loading={logViewLoading}/>
             <br></br>
             <h1>Log Form</h1>
@@ -210,23 +163,10 @@ const Log = (props) => {
                     </Button>
                 </Form.Item>
             </Form>
-            <div>
-                Display Goal: <Switch onChange={onChangeSwitch} defaultChecked={true}/>
-                <p>Adjust lbs lost per week</p>
-                <Slider defaultValue={1} min={0} max={10} marks={marks} disabled={!options.switchChecked} onChange={onChangeSlider}/>
-            </div>
             <h1>Body Fat Graph</h1>
-            <Graph 
-                xKey="date" 
-                firstLine={{
-                    yKey: 'first',
-                    name: 'Your Body Fat',
-                    values: bodyFatData
-                }}
-                secondLine={goalBodyFatData}
-            />
+            <Graph data={bodyFatData} name="Body Fat"/>
             <h1>Body Weight Graph</h1>
-            <BodyWeightGraph data={bodyWeightData}/>
+            <Graph data={bodyWeightData} name="Body Weight"/>
         </div>
     )
 }
