@@ -44,7 +44,7 @@ function App() {
               {
                 sessionInfo.isSignedIn &&
                   <Menu.Item key="3">
-                    <Link to="/logout">Logout</Link>
+                    <Logout/>
                   </Menu.Item>
               }
             </Menu>
@@ -67,9 +67,6 @@ function App() {
                 </Route>
                 <Route exact path="/preview">
                   <GoalPreview/>
-                </Route>
-                <Route exact path="/logout">
-                  <Logout/>
                 </Route>
                 <Route exact path="/oauth">
                   <Oauth/>
