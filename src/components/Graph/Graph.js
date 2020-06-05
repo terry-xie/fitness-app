@@ -1,66 +1,30 @@
 import React from 'react';
+import moment from 'moment';
 import {LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line} from 'recharts';
 
 const Graph = (props) => {
-    // {
-        // xKey: 'date'
-    //     firstLine: {
-    //         yKey: 'first',
-    //         values: [],
-    //         name: ''
-    //     },
+    // const data = props.data;
 
-    const firstLineData = props.firstLine.values.map(([x,y]) => ({
-        [props.xKey]: x,
-        [props.firstLine.yKey]: y
-    }));
+    // if(data.length > 1){
+    //     //there are enough entries to show progress
+    //     const step = 1;
+    //     data[0].y2 = data[0].y;
 
-    // let secondLineData = null;
-    // if(props.secondLine)
-    // {
-    //     secondLineData = props.secondLine.values.map(([x,y]) => ({
-    //         [props.xKey]: x,
-    //         [props.secondLine.yKey]: y
-    //     }));
-    // }
-
-
-    let data = firstLineData;
-
-    // if(secondLineData){
-    //     data = [];
-    //     for(let i=0;i<firstLineData.length;i++){
-    //         data.push({
-    //             ...firstLineData[i],
-    //             ...secondLineData.find(secondData => secondData[props.xKey] === firstLineData[i][props.xKey])
-    //         });
+    //     for(let i=1;i<data.length;i++){
+    //         const idealWeight = (data[0].y - (moment(data[i].x, 'MM-DD-YYYY').diff(moment(data[0].x, 'MM-DD-YYYY'), 'days') * step/7)).toFixed(2);
+    //         data[i].y2 = idealWeight;
     //     }
-    //     for(let i=0;i<secondLineData.length;i++){
-    //         const match = firstLineData.find(firstData => firstData[props.xKey] === secondLineData[i][props.xKey]);
-    //         if(!match)
-    //             data.push({
-    //                 [props.xKey]: secondLineData[i][props.xKey],
-    //                 [props.secondLine.yKey]: secondLineData[i][props.secondLine.yKey]
-    //             });
-    //     }
-    // }
-
-    // data.sort((a,b)=> a[props.xKey] > b[props.xKey]);
-    
-    let secondLine = null;
-    // if(props.secondLine){
-    //     secondLine = <Line type="monotone" dataKey={props.secondLine.yKey} name={props.secondLine.name} stroke="#82ca9d"/>;
     // }
 
     return (
-        <LineChart width={1000} height={300} data={data} margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-            <XAxis dataKey={props.xKey}/>
+        <LineChart width={1000} height={300} data={props.data} margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+            <XAxis dataKey="x"/>
             <YAxis/>
             <CartesianGrid/>
             <Tooltip/>
             <Legend/>
-            <Line type="monotone" dataKey={props.firstLine.yKey} name={props.firstLine.name} stroke="#8884d8" activeDot={{r: 8}}/>
-            {secondLine}
+            <Line type="monotone" dataKey="y" name={props.name} stroke="#8884d8" activeDot={{r: 8}}/>
+            {/* <Line type="monotone" dataKey="y2" name="Ideal" stroke="#8884d8" activeDot={{r: 8}}/> */}
         </LineChart>
     )
 };
