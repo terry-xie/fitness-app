@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { OauthApi } from '../../withingsApi';
 import { SET_SESSION } from '../../redux/actionTypes';
 import { useDispatch } from 'react-redux';
+import { Button, Space } from 'antd';
 
 const Login = props => {
     const history = useHistory();
@@ -34,17 +35,18 @@ const Login = props => {
 
     return (
         <div>
-            Login with Google to record/track your own progress, or login with Withings to access your Withings stats. Use the Demo login to access a demo version of the app using sample data from Withings.
-            <br/>
-            <GoogleLogin
-                clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-                buttonText="Login"
-                onSuccess={onSuccessfulLogin}
-            />
-            <br/>
-            <button onClick={onClick}>Withings Login</button>
-            <br/>
-            <button onClick={onDemoClick}>Withings Demo Login</button>
+            <Space direction="vertical">
+                <p>Login with Google to record/track your own progress, or login with Withings to access your Withings stats.</p>
+                <GoogleLogin
+                    clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                    buttonText="Login"
+                    onSuccess={onSuccessfulLogin}
+                />
+                <Button onClick={onClick}>Withings Login</Button>
+                <br/>
+                <p>Use the Demo login to access a demo version of the app using sample data from Withings.</p>
+                <Button onClick={onDemoClick}>Demo Login</Button>
+            </Space>
         </div>
     )
 };
