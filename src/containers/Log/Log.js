@@ -2,7 +2,7 @@ import React, {useState, useMemo, useContext, useEffect} from 'react';
 import LogView from '../../components/LogView/LogView';
 import { formatDate } from '../../utility/utility';
 import Graph from '../../components/Graph/Graph';
-import { Form, Button, InputNumber, DatePicker, Slider, Switch } from 'antd';
+import { Form, Button, InputNumber, DatePicker, Radio, Divider, Space } from 'antd';
 import { FirebaseContext } from '../../components/Firebase';
 import { getSession } from '../../redux/selectors';
 import { useSelector } from 'react-redux';
@@ -10,15 +10,25 @@ import { useSelector } from 'react-redux';
 const validateMessages = {
     required: '${label} is required!',
     types: {
-        float: '${label} is not a valid number!'
+        number: '${label} is not a valid number!'
     }
 };
+
+const formItemLayout = {
+    labelCol: {span: 2},
+};
+
+const formTailLayout = {
+    wrapperCol: {span: 2, offset: 2}
+}
+
 
 const Log = (props) => {
     const firebase = useContext(FirebaseContext);
     const [logs, setLogs] = useState([]);
     const [formLoading, setFormLoading] = useState(false);
     const [logViewLoading, setLogViewLoading] = useState(true);
+    const [viewMode, setViewMode] = useState('log');
     const sessionInfo = useSelector(getSession);
 
     const logFormSubmitHandler = (values) => {
@@ -101,72 +111,120 @@ const Log = (props) => {
                         ...log,
                         date: formatDate(log.date)
                     }
-                ]).sort((a,b) => a.date > b.date));
+                ]).sort((a,b) => a.date < b.date));
                 res();
                 setLogViewLoading(false);
             });
         });
     };
 
+    const onRadioChange = e => {
+        setViewMode(e.target.value);
+    }
+
+    let view = null;
+    switch(viewMode){
+        case 'log':
+            view = <LogView logs={logs} removeEntry={removeEntryHandler} updateEntry={updateLogsHandler} loading={logViewLoading}/>
+            break;
+        case 'graph':
+            view = 
+                <React.Fragment>
+                    <div style={{margin: '5px'}}>
+                        <h2 style={{textAlign: 'center'}}>Body Weight</h2>
+                        <Graph data={bodyWeightData} name="Body Weight"/>
+                    </div>
+                    <div style={{margin: '30px'}}>
+                        <h2 style={{textAlign: 'center'}}>Body Fat</h2>
+                        <Graph data={bodyFatData} name="Body Fat"/>
+                    </div>
+                </React.Fragment>;
+            break;
+        default:
+    }
+
     return(
         <div>
-            <LogView logs={logs} removeEntry={removeEntryHandler} updateEntry={updateLogsHandler} loading={logViewLoading}/>
-            <br></br>
-            <h1>Log Form</h1>
-            <Form
-                name="logForm"
-                onFinish={logFormSubmitHandler}
-                validateMessages={validateMessages}
-            >
-                <Form.Item
-                    label="Date"
-                    name="date"
-                    rules={[
-                        {
-                            required: true,
-                        }
-                    ]}
+            <div style={{marginBottom: '16px'}}>
+                <Space>
+                    <b>Display:</b>
+                    <Radio.Group 
+                        defaultValue="log"
+                        buttonStyle="solid"
+                        onChange={onRadioChange}
+                    >
+                        <Radio.Button value="log">Log</Radio.Button>
+                        <Radio.Button value="graph">Graph</Radio.Button>
+                    </Radio.Group>
+                </Space>
+            </div>
+            <div>
+                {view}
+            </div>
+            <Divider/>
+            <div>
+                <Form
+                    name="logForm"
+                    onFinish={logFormSubmitHandler}
+                    validateMessages={validateMessages}
                 >
-                    <DatePicker format="MM-DD-YYYY" />
-                </Form.Item>
-                <Form.Item
-                    label="Body Fat"
-                    name="bodyFat"
-                    rules={[
-                        {
-                            required: true,
-                            type: 'number',
-                            min: 0,
-                            max: 100
-                        }
-                    ]}
-                >
-                    <InputNumber />
-                </Form.Item>
-                <Form.Item
-                    label="Body Weight"
-                    name="bodyWeight"
-                    rules={[
-                        {
-                            required: true,
-                            type: 'number',
-                            min: 0,
-                            max: 1000
-                        }
-                    ]}
-                >
-                    <InputNumber />
-                </Form.Item>
-                <Form.Item>
-                    <Button type="primary" htmlType="submit" loading={formLoading}>
-                        Record my gains
-                    </Button>
-                </Form.Item>
-            </Form>
-            <h1>Body Fat Graph</h1>
-            <Graph data={bodyFatData} name="Body Fat"/>
-            <h1>Body Weight Graph</h1>
-            <Graph data={bodyWeightData} name="Body Weight"/>
+                    <Form.Item
+                        {...formItemLayout}
+                        label="Date"
+                        name="date"
+                        rules={[
+                            {
+                                required: true,
+                            }
+                        ]}
+                    >
+                        <DatePicker format="MM-DD-YYYY" />
+                    </Form.Item>
+                    <Form.Item
+                        {...formItemLayout}
+                        label="Body Weight"
+                        name="bodyWeight"
+                        rules={[
+                            {
+                                required: true,
+                                type: 'number',
+                                min: 0,
+                                max: 1000
+                            }
+                        ]}
+                    >
+                        <InputNumber 
+                            placeholder="lbs"
+                            precision="1"
+                            min="0"
+                            max="1000"
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        {...formItemLayout}
+                        label="Body Fat"
+                        name="bodyFat"
+                        rules={[
+                            {
+                                required: true,
+                                type: 'number',
+                                min: 0,
+                                max: 100
+                            }
+                        ]}
+                    >
+                        <InputNumber 
+                            placeholder="%"
+                            precision="1"
+                            min="0"
+                            max="100"
+                        />
+                    </Form.Item>
+                    <Form.Item {...formTailLayout}>
+                        <Button type="primary" htmlType="submit" loading={formLoading}>Add New Entry</Button>
+                    </Form.Item>
+                </Form>
+            </div>
         </div>
     )
 }

@@ -1,13 +1,17 @@
 import React, { useState, useMemo } from 'react';
-import { Table, Button, Modal, Form, InputNumber, DatePicker, Popconfirm } from 'antd';
+import { Table, Button, Modal, Form, InputNumber, DatePicker, Popconfirm, Space } from 'antd';
 import { DeleteOutlined , EditOutlined} from '@ant-design/icons'
 import moment from 'moment';
 
 const validateMessages = {
     required: '${label} is required!',
     types: {
-        float: '${label} is not a valid number!'
+        number: '${label} is not a valid number!'
     }
+};
+
+const formItemLayout = {
+    labelCol: {span: 6}
 };
 
 const LogView = (props) => {
@@ -35,16 +39,16 @@ const LogView = (props) => {
             dataIndex: 'date'
         },
         {
-            title: 'Body Fat (%)',
-            dataIndex: 'bodyFat'
-        },
-        {
             title: 'Body Weight (lbs)',
             dataIndex: 'bodyWeight'
         },
         {
+            title: 'Body Fat (%)',
+            dataIndex: 'bodyFat'
+        },
+        {
             render: (_,record) => (
-                <React.Fragment>
+                <Space size="middle">
                     <Button icon={<EditOutlined />} onClick={() => {showModal(record)}} />
                     <Popconfirm 
                         onConfirm={() => removeRows([record.key])}
@@ -54,7 +58,7 @@ const LogView = (props) => {
                     >
                         <Button icon={<DeleteOutlined />} />
                     </Popconfirm>
-                </React.Fragment>
+                </Space>
             )
         }
     ];
@@ -107,18 +111,17 @@ const LogView = (props) => {
 
     return (
         <div>
-            <h1>Logs</h1>
             <div style={{ marginBottom: 16 }}>
-            <Button type="primary" disabled={!selectedRowKeys.length > 0} onClick={() => removeRows(selectedRowKeys)} loading={props.loading}>
-                Delete Entries
-            </Button>
-            <span style={{ marginLeft: 8 }}>
-                {selectedRowKeys.length > 0 ? `Selected ${selectedRowKeys.length} items` : ''}
-            </span>
+                <Button type="primary" disabled={!selectedRowKeys.length > 0} onClick={() => removeRows(selectedRowKeys)} loading={props.loading}>
+                    Delete Entries
+                </Button>
+                <span style={{ marginLeft: 8 }}>
+                    {selectedRowKeys.length > 0 ? `Selected ${selectedRowKeys.length} items` : ''}
+                </span>
             </div>
             <Table rowSelection={rowSelection} columns={columns} dataSource={data} loading={props.loading}/>
             <Modal
-                title="Log"
+                title="Edit Entry"
                 visible={modalState.visible}
                 okText="Update"
                 onOk={okModal}
@@ -132,13 +135,14 @@ const LogView = (props) => {
                     initialValues={
                         {
                             date: modalState.date,
-                            bodyFat: modalState.bodyFat,
-                            bodyWeight: modalState.bodyWeight
+                            bodyWeight: modalState.bodyWeight,
+                            bodyFat: modalState.bodyFat
                         }
                     }
                     onValuesChange={onValuesChange}
                 >
                     <Form.Item
+                        {...formItemLayout}
                         label="Date"
                         name="date"
                         rules={[
@@ -150,20 +154,7 @@ const LogView = (props) => {
                         <DatePicker format="MM-DD-YYYY"/>
                     </Form.Item>
                     <Form.Item
-                        label="Body Fat"
-                        name="bodyFat"
-                        rules={[
-                            {
-                                required: true,
-                                type: 'number',
-                                min: 0,
-                                max: 100
-                            }
-                        ]}
-                    >
-                        <InputNumber />
-                    </Form.Item>
-                    <Form.Item
+                        {...formItemLayout}
                         label="Body Weight"
                         name="bodyWeight"
                         rules={[
@@ -175,7 +166,32 @@ const LogView = (props) => {
                             }
                         ]}
                     >
-                        <InputNumber />
+                        <InputNumber 
+                            placeholder="lbs"
+                            precision="1"
+                            min="0"
+                            max="1000"
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        {...formItemLayout}
+                        label="Body Fat"
+                        name="bodyFat"
+                        rules={[
+                            {
+                                required: true,
+                                type: 'number',
+                                min: 0,
+                                max: 100
+                            }
+                        ]}
+                    >
+                        <InputNumber 
+                            placeholder="%"
+                            precision="1"
+                            min="0"
+                            max="100"
+                        />
                     </Form.Item>
                 </Form>
             </Modal>
