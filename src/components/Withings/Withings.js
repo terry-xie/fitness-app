@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { DataApi } from '../../withingsApi';
-import { Table, Typography } from 'antd';
+import { Table, Typography, Space, Radio } from 'antd';
 import { useSelector } from 'react-redux';
 import { getSession } from '../../redux/selectors';
 
@@ -46,16 +46,16 @@ const weeklyColumns = [
         title: 'Average Muscle Mass (lbs)',
         dataIndex: 'muscleMass'
     },
-    {
-        title: 'Difference From Previous Week (lbs)',
-        render: (text, record, index) => {
-            if(!record.diff)
-                return;
+    // {
+    //     title: 'Difference From Previous Week (lbs)',
+    //     render: (text, record, index) => {
+    //         if(!record.diff)
+    //             return;
 
-            const diff = record.diff > 0 ? <Text>{`+${record.diff}`}</Text> : <Text type="danger">{`${record.diff}`}</Text>
-            return diff;
-        }
-    },
+    //         const diff = record.diff > 0 ? <Text>{`+${record.diff}`}</Text> : <Text type="danger">{`${record.diff}`}</Text>
+    //         return diff;
+    //     }
+    // },
     {
         title: 'Average Fat Mass (lbs)',
         dataIndex: 'fatMass'
@@ -75,6 +75,8 @@ const Withings = props => {
     const { accessToken } = sessionInfo;
     const [measurements, setMeasurements] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [statMode, setStatMode] = useState('day');
+
     const dailyData = measurements.reduce((acc, curr) => {
         if(curr.muscleMass){
             acc.push({
@@ -92,23 +94,48 @@ const Withings = props => {
 
     const weeklyData = getWeeklyAverages(groupIntoWeeks(measurements));
 
+    const onRadioChange = e => {
+        setStatMode(e.target.value);
+    }
+
     useEffect(() => {
         DataApi.getMeasurements(accessToken)
             .then(res => {
-                console.log('***response');
-                console.log(res);
                 setMeasurements(res);
                 setLoading(false);
             })
             .catch(err => {});
     },[]);
 
+    let view = null;
+    switch(statMode){
+        case 'day':
+            view = <Table columns={dailyColumns} dataSource={dailyData} loading={loading}/>
+            break;
+        case 'week':
+            view = <Table columns={weeklyColumns} dataSource={weeklyData} loading={loading}/>
+            break;
+        default:
+    }
+
     return (
         <div>
-            Stats by Day:
-            <Table columns={dailyColumns} dataSource={dailyData} loading={loading}/>
-            Average Stats by Week:
-            <Table columns={weeklyColumns} dataSource={weeklyData} loading={loading} />
+            <div style={{marginBottom: '16px'}}>
+                <Space>
+                    <b>Display stats by:</b>
+                    <Radio.Group 
+                        defaultValue="day"
+                        buttonStyle="solid"
+                        onChange={onRadioChange}
+                    >
+                        <Radio.Button value="day">Daily</Radio.Button>
+                        <Radio.Button value="week">Weekly</Radio.Button>
+                    </Radio.Group>
+                </Space>
+            </div>
+            <div>
+                {view}
+            </div>
         </div>
     )
 }
