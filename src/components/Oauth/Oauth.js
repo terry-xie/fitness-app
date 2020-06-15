@@ -37,8 +37,10 @@ const Oauth = props => {
 
     return (
         <div>
-            Loading...
-            <Spin size="large"/>
+            <Spin 
+                size="large"   
+                style={{position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)'}}
+            />
         </div>
     )
 }
