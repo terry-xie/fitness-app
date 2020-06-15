@@ -2,7 +2,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { oauthConfig } from './config';
 
-const redirect = 'http://bcb7aa75b04c.ngrok.io/oauth';
+const redirect = 'https://terry-fitness-app.herokuapp.com/oauth';
 
 class OauthApi {
     constructor(){
