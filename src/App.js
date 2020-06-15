@@ -24,7 +24,7 @@ function App() {
   return (
       <BrowserRouter>
         <Layout>
-          <Header style={{ position: 'fixed', zIndex: 1, width: '100%', textAlign: 'right' }}>
+          <Header style={{ position: 'fixed', zIndex: 2, width: '100%', textAlign: 'right' }}>
             <Menu theme="dark" mode="horizontal">
               {/* <Menu.Item key="1">
                 <Link to="/preview">Preview</Link>
@@ -38,7 +38,7 @@ function App() {
               {
                 sessionInfo.isSignedIn &&
                   <Menu.Item key="2">
-                    <Link to="/log">Logs</Link>
+                    <Link to="/log">Log</Link>
                   </Menu.Item>
               }
               {
@@ -49,8 +49,8 @@ function App() {
               }
             </Menu>
           </Header>
-          <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64 }}>
-            <div className="site-layout-background" style={{ padding: 24, minHeight: 380 }}>
+          <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64, height: '100vh' }}>
+            <div className="site-layout-background" style={{ padding: 24}}>
               <Switch>
                 <Route path="/log">
                   <ProtectedRoute>
@@ -95,7 +95,6 @@ function App() {
               </Switch>
             </div>
           </Content>
-          {/* <Footer></Footer> */}
         </Layout>
       </BrowserRouter>
   )
