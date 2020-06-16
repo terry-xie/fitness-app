@@ -2,7 +2,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { oauthConfig } from './config';
 
-const redirect = 'https://terry-fitness-app.herokuapp.com/oauth';
+const redirect = process.env.REACT_APP_WITHINGS_REDIRECT_URI;
 
 class OauthApi {
     constructor(){
