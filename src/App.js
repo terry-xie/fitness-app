@@ -23,7 +23,7 @@ function App() {
 
   return (
       <BrowserRouter>
-        <Layout>
+        <Layout style={{minHeight: "100vh"}}>
           <Header style={{ position: 'fixed', zIndex: 2, width: '100%', textAlign: 'right' }}>
             <Menu theme="dark" mode="horizontal">
               {/* <Menu.Item key="1">
@@ -49,8 +49,8 @@ function App() {
               }
             </Menu>
           </Header>
-          <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64, height: '100vh' }}>
-            <div className="site-layout-background" style={{ padding: 24}}>
+          <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64}}>
+            <div className="site-layout-background" style={{ padding: 24, marginBottom: 64}}>
               <Switch>
                 <Route path="/log">
                   <ProtectedRoute>
