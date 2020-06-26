@@ -1,10 +1,8 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DataApi } from '../../withingsApi';
-import { Table, Typography, Space, Radio } from 'antd';
+import { Table, Space, Radio } from 'antd';
 import { useSelector } from 'react-redux';
 import { getSession } from '../../redux/selectors';
-
-const { Text } = Typography;
 
 const dailyColumns = [
     {

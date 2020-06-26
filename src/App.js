@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   BrowserRouter,
   Switch,
@@ -16,7 +16,7 @@ import './App.css';
 import Withings from './components/Withings/Withings';
 import { getSession } from './redux/selectors';
 import { useSelector } from 'react-redux';
-const { Header, Content, Footer } = Layout;
+const { Header, Content } = Layout;
 
 function App() {
   const sessionInfo = useSelector(getSession);

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import GoogleLogin from 'react-google-login';
 import { useHistory } from 'react-router-dom';
 import { OauthApi } from '../../withingsApi';

@@ -24,7 +24,6 @@ const LogView = (props) => {
         visible: false
     });
     const [modalFormLoading, setModalFormLoading] = useState(false);
-    const [logsLoading, setLogsLoading] = useState(false);
 
     const data = useMemo(() => props.logs.map(entry => ({
         key: entry.id,

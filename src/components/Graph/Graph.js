@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment';
 import {LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line} from 'recharts';
 
 const Graph = (props) => {
