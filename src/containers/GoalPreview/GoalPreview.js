@@ -2,8 +2,6 @@ import React, {useState} from 'react';
 import GoalGraph from '../../components/GoalGraph/GoalGraph';
 import { Form, Button, InputNumber } from 'antd';
 
-import './GoalPreview.css';
-
 const validateMessages = {
     required: '${label} is required!',
     types: {
