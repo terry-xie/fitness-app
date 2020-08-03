@@ -2,11 +2,11 @@ import axios from 'axios';
 import { dataConfig } from './config';
 import moment from 'moment';
 
-const WEIGHT_MEASTYPE = 1;
-const BODY_FAT_MEASTYPE = 6;
-const FAT_MASS_MEASTYPE = 8;
-const MUSCLE_MASS_MEASTYPE = 76;
-const WATER_WEIGHT_MEASTYPE = 77;
+export const WEIGHT_MEASTYPE = 1;
+export const BODY_FAT_MEASTYPE = 6;
+export const FAT_MASS_MEASTYPE = 8;
+export const MUSCLE_MASS_MEASTYPE = 76;
+export const WATER_WEIGHT_MEASTYPE = 77;
 
 class DataApi {
 
@@ -31,8 +31,12 @@ class DataApi {
     }
 }
 
-const transformData = data => {
+const convertKgToLb = kg => {
     const kgToLbRatio = 2.20462;
+    return (kg * kgToLbRatio).toFixed(2);
+}
+
+const transformData = data => {
     const res = [];
     for(let i=0;i<data.length;i++){
         let muscleMass;
@@ -65,14 +69,14 @@ const transformData = data => {
         }
         res.push({
             date: moment.unix(data[i].date),
-            weight: weight ? (weight.value * Math.pow(10,weight.unit) * kgToLbRatio).toFixed(2) : undefined,
+            weight: weight ? convertKgToLb(weight.value * Math.pow(10,weight.unit)) : undefined,
             bodyFat: bodyFat ? (bodyFat.value * Math.pow(10,bodyFat.unit)).toFixed(2) : undefined,
-            fatMass: fatMass ? (fatMass.value * Math.pow(10,fatMass.unit) * kgToLbRatio).toFixed(2) : undefined,
-            muscleMass: muscleMass ? (muscleMass.value * Math.pow(10,muscleMass.unit) * kgToLbRatio).toFixed(2) : undefined,
-            waterWeight: waterWeight ? (waterWeight.value * Math.pow(10,waterWeight.unit)).toFixed(2) : undefined
+            fatMass: fatMass ? convertKgToLb(fatMass.value * Math.pow(10,fatMass.unit)) : undefined,
+            muscleMass: muscleMass ? convertKgToLb(muscleMass.value * Math.pow(10,muscleMass.unit)) : undefined,
+            waterWeight: waterWeight ? convertKgToLb(waterWeight.value * Math.pow(10,waterWeight.unit)) : undefined
         });
     }
-    return res.sort((a,b) => a.date < b.date);
+    return res.sort((a,b) => b.date - a.date);
 }
 
 
@@ -99,4 +103,8 @@ const transformData = data => {
 */
 
 
-export default DataApi;
+export {
+    DataApi,
+    convertKgToLb,
+    transformData
+};
