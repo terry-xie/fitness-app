@@ -2,8 +2,6 @@ import axios from 'axios';
 import qs from 'qs';
 import { oauthConfig } from './config';
 
-const redirect = process.env.REACT_APP_WITHINGS_REDIRECT_URI;
-
 class OauthApi {
     constructor(){
         this.api = axios.create(oauthConfig);
@@ -16,7 +14,7 @@ class OauthApi {
                 client_id: process.env.REACT_APP_WITHINGS_CLIENT_ID,
                 client_secret: process.env.REACT_APP_WITHINGS_SECRET,
                 code: accessCode,
-                redirect_uri: redirect
+                redirect_uri: process.env.REACT_APP_WITHINGS_REDIRECT_URI
             })
         ).then(({data}) => {
             return Promise.resolve({
@@ -36,7 +34,7 @@ class OauthApi {
             client_id: process.env.REACT_APP_WITHINGS_CLIENT_ID,
             state: isDemo ? 'demo' : 'normal',
             scope: 'user.metrics',
-            redirect_uri: redirect,
+            redirect_uri: process.env.REACT_APP_WITHINGS_REDIRECT_URI,
             mode: isDemo ? 'demo' : ''
         }; 
 
